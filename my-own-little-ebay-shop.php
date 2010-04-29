@@ -82,6 +82,7 @@ function my_own_little_ebay_shop_options() {
 	//Shop Categories
 	$my_own_little_ebay_shop_cats_excluded = get_option('my_own_little_ebay_shop_cats_excluded');
 	$my_own_little_ebay_shop_categories = get_option('my_own_little_ebay_shop_categories');
+	ebayShopDebug($my_own_little_ebay_shop_categories);
 	echo '<tr valign="top">';
     echo '<th scope="row">Manage the ebay shop categories</th>';
 	echo '<td>';
@@ -90,9 +91,16 @@ function my_own_little_ebay_shop_options() {
 	/*No Categories saved in the options*/
 	if(!empty($my_own_little_ebay_shop_categories)){
 		foreach($my_own_little_ebay_shop_categories as $key => $catNiceName){
-			if($my_own_little_ebay_shop_cats_excluded[$key] == TRUE) $checked = 'checked';
+			if($my_own_little_ebay_shop_categories[$key]['excluded'] == 'on') $checked = 'checked';
 			else $checked = '';
-			echo '<li><input type="checkbox" '.$checked.' name="my_own_little_ebay_shop_cats_excluded['.$key.']"><input value="'.$catNiceName.'" name="my_own_little_ebay_shop_categories['.$key.']"/></li>';
+			//Excluded default
+			echo '<input name="my_own_little_ebay_shop_categories['.$key.'][excluded]" value="off" class="hidden"/>';
+			//Rss
+			echo '<input name="my_own_little_ebay_shop_categories['.$key.'][rss]" value="'.$my_own_little_ebay_shop_categories[$key]['rss'].'" class="hidden"/>';
+			//Name for request and text file
+			echo '<input name="my_own_little_ebay_shop_categories['.$key.'][requestName]" value="'.nicePath($key).'" class="hidden"/>';
+			//Category Name and Nicename
+			echo '<li><input type="checkbox" '.$checked.' name="my_own_little_ebay_shop_categories['.$key.'][excluded]"><input value="'.$my_own_little_ebay_shop_categories[$key]['niceName'].'" name="my_own_little_ebay_shop_categories['.$key.'][niceName]"/></li>';
 		}
 	}
 	echo '</ul>';
@@ -170,28 +178,20 @@ function theLittleShop($theShop){
 		}else{
 			if(isset($_GET["shopFor"]) || ctype_print($_GET["shopFor"])) $requestedCat = $_GET["shopFor"];
 		}
-	    //Rebuild Cats RSS Array with the names from the options
-	    $catRSSNamesFromOption = get_option('my_own_little_ebay_shop_categories');
-	    $catExcluded = get_option('my_own_little_ebay_shop_cats_excluded');
-
-	    $catRSSNamesFromTempFile = getTempFileContent(tempShopCatsPath());
-	    ebayShopDebug($catRSSNamesFromTempFile);
-		$catRSSNiceName = array_combine($catRSSNamesFromOption, $catRSSNamesFromTempFile);
-		/*$catRSSNiceName = array(
-		     'All' => 'http://shop.ebay.co.uk/Anna-Chocola__W0QQ_rssZ1QQ_rssstoreZ1',
-		     'Shope-Tote-bags' => 'http://shop.ebay.co.uk/Anna-Chocola_Shopping-Tote-bag_W0QQ_fsubZ17022089QQ_rssZ1QQ_rssstoreZ1',
-		     'Clothes' => 'http://shop.ebay.co.uk/Anna-Chocola_Clothes_W0QQ_fsubZ17022090QQ_rssZ1QQ_rssstoreZ1',
-		     'Soft-Toys' => 'http://shop.ebay.co.uk/Anna-Chocola_Soft-Toys_W0QQ_fsubZ17022091QQ_rssZ1QQ_rssstoreZ1',
-		     'Bargains' => 'http://shop.ebay.co.uk/Anna-Chocola_Bargains_W0QQ_fsubZ17500445QQ_rssZ1QQ_rssstoreZ1',
-		     'Fascinators' => 'http://shop.ebay.co.uk/Anna-Chocola_Fascinators_W0QQ_fsubZ695378011QQ_rssZ1QQ_rssstoreZ1',
-		     'Others' => 'http://shop.ebay.co.uk/Anna-Chocola_Other_W0QQ_fsubZ1QQ_rssZ1QQ_rssstoreZ1'
-		);*/
-	
-		//If there is a Temp File
+	    //Get Categories array with all infos: niceName, excluded, RSS, requestName
+	    $categoriesInfosFromOption = get_option('my_own_little_ebay_shop_categories');
+	    //Find the rss for the category requested
+	    foreach($categoriesInfosFromOption as $key){
+	    	if($key['requestName'] === $requestedCat) {
+	    		$requestedCatRss = $key['rss'];
+	    		break;
+	    	}
+	    }
+	    //If there is a Temp File
 		$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().$requestedCat.".txt";
 		if(!tempFileValid($tempCatItemsPath, $maxDiffTime)){
 			//Create a temp file and return array of items
-		    $items =  createCatItemsTempFile($sellerID, $query, $tempCatItemsPath, $catRSSNiceName[$requestedCat]);
+		    $items =  createCatItemsTempFile($sellerID, $query, $tempCatItemsPath, $requestedCatRss);
 		}else{
 			//Recent: get the Temp file and return a array of items
 			$items = getTempFileContent($tempCatItemsPath);
@@ -210,17 +210,19 @@ function theLittleShop($theShop){
 		}	
 		$results .= '</ul>';
 		
+		
 		//Show Menu
 		$menu = '';
 		 $menu .= '<ul id="menu">';
-		 foreach($catRSSNiceName as $cat => $link){
-		 	if($requestedCat == $cat) $class= "selected";
+		 foreach($categoriesInfosFromOption as $cat){
+		 	if($cat['requestName'] == $requestedCat) $class= "selected";
 		 	else $class = "";
-		  $menu .= "<li class=\"$class\"><a href=\"?shopFor=$cat\">$cat</a></li>";
+		  $menu .= "<li class=\"$class\"><a href=\"?shopFor=".$cat['requestName']."\">".$cat['niceName']."</a></li>";
 		  }
 		$menu .= '</ul>';
 		
 		$theShop = '<div id="myLittleShop">'.$menu.$results.'</div>';
+		
 	}
 	
 	return $theShop;

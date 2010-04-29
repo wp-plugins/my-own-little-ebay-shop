@@ -9,6 +9,7 @@
 2/ Options:  - Thumbs size(3232, 6464, 9696)
              - Shop Name
 3/ Make php create the Temp folder ( for permissions )
+4/ don't erase nicename of categories that all ready exist
 
 */
 
@@ -27,14 +28,21 @@ if(!empty($_POST)){
 	    //Crawl the ebay shop and found the links and names
 		$catRSS = getCatsRSS($_POST["getCatsRSS"]);
 		//Serialized
-    	$serializedCatsList = serialize($catRSS);
+    	//$serializedCatsList = serialize($catRSS);
     	//write the txt file
     	//ebayShopDebug($catRSS);
-    	file_put_contents($tempShopCatsPath, $serializedCatsList, LOCK_EX);
+    	//file_put_contents($tempShopCatsPath, $serializedCatsList, LOCK_EX);
         //Return the list of Categories
 		$returnCatsRSSList='';
 		foreach($catRSS as $key => $val){
-			$returnCatsRSSList.='<li><input type="checkbox" name="my_own_little_ebay_shop_cats_excluded['.$key.']"><input value="'.$key.'" name="my_own_little_ebay_shop_categories['.$key.']"/></li>';
+			//Excluded default
+			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$key.'][excluded]" value="off" class="hidden"/>';
+			//Rss
+			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$key.'][rss]" value="'.$val.'" class="hidden"/>';
+			//Name for request and text file
+			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$key.'][requestName]" value="'.nicePath($key).'" class="hidden"/>';
+			//Category Name and Nicename
+			$returnCatsRSSList.='<li><input type="checkbox" name="my_own_little_ebay_shop_categories['.$key.'][excluded]"><input value="'.$key.'" name="my_own_little_ebay_shop_categories['.$key.'][niceName]"/></li>';
 		}
 		echo $returnCatsRSSList;
 	}
@@ -56,6 +64,7 @@ if(!empty($_POST)){
 function createCatItemsTempFile($seller, $query, $myPath, $cat){
 	//Get Items ID
 	$itemsID = getItemsID($cat);
+	//ebayShopDebug($itemsID);
 	//Create empty Array for storing reponses
 	$allItems = array();
 	//Find out how many times you have to send a request
@@ -176,16 +185,18 @@ function getItem($ID, $path){
 function getItemsID($catRSS){
 	// Load the call and capture the document returned by the rss
     $resp = simplexml_load_file($catRSS);
+    //ebayShopDebug($resp);
     if($resp){
     	//Extract IDs and put it in array
     	$itemsID= array();
     	foreach($resp->channel->item as $item) {
-			preg_match('/itemZ(\d+)QQ/', $item->link, $matches);
+			preg_match('/\/(\d+)\?cmd/', (string)$item->link, $matches);
 			$itemsID[] = $matches[1];
 		}
     }else{
     	$itemsID = false;
     }
+    //ebayShopDebug($itemsID);
 	return $itemsID;
 }
 
