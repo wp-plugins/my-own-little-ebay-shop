@@ -42,9 +42,21 @@ none
 
 == To Do ==
 
-a few things
+* work on the css (options, items, listings).
+* When retrieving, ask if you want to: replace all categories, add/remove new/deleted categories. Keep user's nice names.
+* Cooler loading for retrieving.
+* Pagination for shop.
+* Option to set shop name nice name, Thumbs size(3232, 6464, 9696), "Temp files" life length.
+* Item ending time/date: Need Time Spamp from wordpress.
+ 
 
 == Change log ==
+v0.2:
+
+* alpha version
+* Exclude and rename categories
+* Auto retrieve shop's categories
+* Select a welcome message or default category
 
 v0.1:
 
