@@ -65,5 +65,5 @@ v0.1:
 
 == View online examples ==
 
-soon at [Anna Chocola syntax][annachocola.com]
-[Anna Chocola syntax] : http://annachocola.com
+soon at [annachocola.com]
+[annachocola.com] : http://annachocola.com/ebay-shop/
