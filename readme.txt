@@ -10,7 +10,7 @@ Very fast plugin that cache shop's content for a quicker user experience. Easy a
 
 == Description ==
 
-**THIS IS A ALPHA VERSION, PLEASE DO NOT INSTALL, THE FIRST RELEASE WILL COME VERY SOON**
+**THIS IS A ALPHA VERSION, CHANGES WILL HAPPEN!, THE FIRST RELEASE WILL COME VERY SOON**
 
 Very fast plugin that cache your shop's content for a quicker and smoother user experience. Easy to set up, with some clever functionalities,  including retrieving your shop categories, excluding categories, renaming categories (only in wordpress), set a "refresh temp file" time. Displays your ebay shop listing, items infos (pictures, bids, price, etcâ ...) with links to your listing and shop.
 
