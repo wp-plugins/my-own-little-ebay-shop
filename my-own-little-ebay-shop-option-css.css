@@ -1,0 +1,109 @@
+/*Plugin: my-own-little-ebay-shop*/
+/*Content: CSS for the Admin Options */
+/*Author: Thomas Michalak aka TM*/
+/*Author URI: http://www.fuck-dance-lets-art.com*/
+ 
+#my_own_little_ebay_shop_option_form p{
+                float:left;
+}
+
+ul.my_own_little_ebay_shop_list, #exlu_cat_style, ul.switch_OnOff{
+                float:left;
+                padding:0px;
+                margin:0px;
+                width:100%;
+}
+
+ul.my_own_little_ebay_shop_list li, #exlu_cat_style li, #exlu_cat_style li.selected, ul.switch_OnOff li, ul.switch_OnOff li.selected{
+                float:left;
+                list-style-type:none;
+		padding:2px 6px;
+		margin:2px 4px;
+                vertical-align:middle;
+}
+ul.my_own_little_ebay_shop_list li{
+                width:90%;
+}
+#my_own_little_ebay_shop_cats li{
+	width:auto;
+}
+#my_own_little_ebay_shop_aspect_style li span, ul.my_own_little_ebay_shop_list li select{
+                width:100%;
+}
+#exlu_cat_style li, ul.switch_OnOff li{
+		border:solid 1px #999999;
+		background: #FFFFFF;
+}
+#exlu_cat_style li, #exlu_cat_style li.selected{
+                padding:2px 0 4px 0;
+                text-align:center;
+                
+}
+#exlu_cat_style li:hover, ul.switch_OnOff li:hover{
+                border:solid 1px #666;
+		background: #EFEFEF;
+}
+#exlu_cat_style li.selected, ul.switch_OnOff li.selected{
+		border:solid 1px #999999;
+		background: #EFEFEF;
+                color:#999999;
+}
+
+#exlu_cat_style li input, ul.switch_OnOff li input{
+                vertical-align:bottom;
+}
+#exlu_cat_style li label{
+                padding:0 6px 0 4px;
+}
+#exlu_cat_style li input{
+                margin-left:6px;
+}
+ul.switch_OnOff li label{
+                padding:0 0 0 4px;
+}
+#exlu_cat_style li a, #exlu_cat_style li.IAmEmpty a, #exlu_cat_style li.IAmEmpty a:hover{
+                clear:both;
+                display:block;
+                background:#EFEFEF;
+                color:#666;
+                font-size:80%;
+                padding:1px 2px;
+                margin:4px 0 0 0;
+                text-align:center;
+}
+#exlu_cat_style li a:hover{
+                background:#999;
+                color:#fff;
+}
+#exlu_cat_style li.IAmEmpty a, #exlu_cat_style li.IAmEmpty a:hover{
+                color:#CCC;
+}
+textarea.textarea_style{
+                width:95%;
+                min-height:150px;
+}
+
+table.my_own_little_ebay_shop_table td{
+	border-bottom:solid 1px #CCC;
+	padding:20px;
+	margin:10px 0;
+}
+
+table.my_own_little_ebay_shop_table th{
+	background:#EFEFEF;
+	border-bottom:solid 1px #CCC;
+}
+
+/****Loading*****/
+#loading{
+	position:absolute;
+	padding:0 !important;
+	margin:0 !important;
+	left:-10000000px;
+	font-size:150%;
+	opacity:0;
+	text-align:center;
+}
+#loading img{
+	vertical-align:bottom;
+}
