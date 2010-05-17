@@ -3,7 +3,7 @@
 Plugin Name: My own little eBay Shop
 Plugin URI: http://fuck-dance-lets-art.com/my-own-little-ebay-shop-wordpress-plugin
 Description: **THIS IS A ALPHA VERSION, CHANGES WILL HAPPEN!, THE FIRST RELEASE WILL COME VERY SOON**. Very fast plugin that cache your shop's content for a quicker and smoother user experience. Easy to set up, with some clever functionalities,  including retrieving your shop categories, excluding categories, renaming categories (only in wordpress), set a "refresh temp file" time. Displays your ebay shop listing, items infos (pictures, bids, price, etc‚ ...) with links to your listing and shop.
-Version: 0.2
+Version: 0.3
 Author: Thomas Michalak aka TM
 Author URI: http://fuck-dance-lets-art.com/
 */
@@ -38,6 +38,7 @@ add_option(select_my_own_little_ebay_shop_page, '');
 add_option(my_own_little_ebay_shop_username, 'annachocola');
 add_option(my_own_little_ebay_shop_cats_excluded, '');
 add_option(my_own_little_ebay_shop_categories, '');
+add_option(my_own_little_ebay_shop_refresh, '86400');
 add_option(my_own_little_ebay_shop_message_switch, 'on');
 add_option(my_own_little_ebay_shop_welcome_message, 'Welcome to '.get_bloginfo('name').' ebay shop, browse my lovely items and buy!'); 
 add_option(my_own_little_ebay_shop_welcome_category, '');
@@ -75,12 +76,15 @@ function my_own_little_ebay_shop_options() {
 	
 	// User Name
     echo '<tr valign="top">';
-    echo '<th scope="row">Enter the ebay shop id</th>';
+    echo '<th scope="row">The ebay shop id</th>';
     echo '<td>';
+    echo '<p>This is your eaby shop id <small>(ex: http://stores.ebay.co.uk/<u><strong>Anna-Chocola</strong></u>)</p>';
 	echo '<ul class="my_own_little_ebay_shop_list">';
 	$textarea_content = get_option('my_own_little_ebay_shop_username');
 	echo '<li><input class="textarea_style" id="my_own_little_ebay_shop_username" name="my_own_little_ebay_shop_username" value="'.$textarea_content.'"></li>';
-	echo '</td></tr>';
+	echo '</ul>';
+	echo '</td>';
+	echo '</tr>';
 	
 	//Shop Categories
 	$my_own_little_ebay_shop_cats_excluded = get_option('my_own_little_ebay_shop_cats_excluded');
@@ -89,7 +93,6 @@ function my_own_little_ebay_shop_options() {
 	echo '<tr valign="top">';
     echo '<th scope="row">Manage the ebay shop categories</th>';
 	echo '<td id="manageCategories">';
-	echo '<p id="loading" style="position:absolute;padding:0;left:-10000000px;font-size:150%;opacity:0">Retreiving Categories, please wait…</p>';
 	echo '<a href="" id="retreiveCategories">Retreive my shop categories</a> <small>(this will delete your current categories\' list below)</small>';
 	echo '<ul id="my_own_little_ebay_shop_cats" class="my_own_little_ebay_shop_list">';
 	/*No Categories saved in the options*/
@@ -110,6 +113,26 @@ function my_own_little_ebay_shop_options() {
 	echo '</ul>';
 	echo '</td></tr>';
 		
+	//Main Options
+	//$tempTimes = array("never" => 0, "1h" => 3600, "12h" => 43200, "every day" => 86400, "every week" => 604800, "every month" => 18748800 );
+	$tempTimes = array("4h" => 14400, "12h" => 43200, "every day" => 86400, "every week" => 604800, "every month" => 18748800 );
+	echo '<tr valign="top">';
+        echo '<th scope="row">Categories\' Cache Files time length</th>';
+        echo '<td>';
+        echo '<p>Cache file\'s life expectency (how long before cache files get recreated)</p>';
+		echo '<ul class="switch_OnOff">';
+		foreach($tempTimes as $t=>$tVal){
+			if($tVal == get_option('my_own_little_ebay_shop_refresh')){
+		        $sel = ' checked = true';
+		        $sel_style = ' class = selected';
+			}else{
+		         $sel = '';
+		        $sel_style = '';	
+			}
+			echo '<li><input type="radio"'.$sel.$sel_style.' value="'.$tVal.'" name="my_own_little_ebay_shop_refresh"><label>'.$t.'</label></li>';
+		}
+	echo '</td></tr>';
+	
 	
 	// Welcome Message Options
 	echo '<tr valign="top">';
@@ -159,7 +182,7 @@ function my_own_little_ebay_shop_options() {
         echo '</table>';
 
         echo '<input type="hidden" name="action" value="update" />';
-        echo '<input type="hidden" name="page_options" value="select_my_own_little_ebay_shop_page, my_own_little_ebay_shop_username, my_own_little_ebay_shop_categories, my_own_little_ebay_shop_cats_excluded, my_own_little_ebay_shop_message_switch, my_own_little_ebay_shop_welcome_message, my_own_little_ebay_shop_welcome_category" />';
+        echo '<input type="hidden" name="page_options" value="select_my_own_little_ebay_shop_page, my_own_little_ebay_shop_username, my_own_little_ebay_shop_categories, my_own_little_ebay_shop_cats_excluded, my_own_little_ebay_shop_refresh, my_own_little_ebay_shop_message_switch, my_own_little_ebay_shop_welcome_message, my_own_little_ebay_shop_welcome_category" />';
 
         echo '<p class="submit">';
         echo '<input type="submit" name="Submit" value="Save Changes" />';
@@ -167,7 +190,9 @@ function my_own_little_ebay_shop_options() {
 
         echo '</form>';
 
-  
+  		//Extra Stuff
+ 		 echo '<p id="loading"><img src="'.myOwnLittleEbayShopPluginURLDirect().'/imgs/loader.gif"> Retreiving Categories, please wait…</p>';
+	
         echo '</div>';
 }
 
@@ -219,7 +244,7 @@ function theLittleShop($theShop){
 		$nbrItemsPerPage = '9';
 		$items = array();
 		$tempValid = true;
-		$maxDiffTime = 60*24;
+		$maxDiffTime = get_option('my_own_little_ebay_shop_refresh');
 	
 		if(empty($_GET)){
 			if( $welcomeMessage === 'On') $showWelcomeMessage = true;
@@ -230,15 +255,10 @@ function theLittleShop($theShop){
 		}else{
 			if(isset($_GET["shopFor"]) || ctype_print($_GET["shopFor"])) $requestedCat = $_GET["shopFor"];
 		}
-	    //Get Categories array with all infos: niceName, excluded, RSS, requestName
-	    $categoriesInfosFromOption = get_option('my_own_little_ebay_shop_categories');
-	    //Find the rss for the category requested
-	    foreach($categoriesInfosFromOption as $cat){
-	    	if($cat['requestName'] === $requestedCat) {
-	    		$requestedCatRss = $cat['rss'];
-	    		break;
-	    	}
-	    }
+	   
+	   //Get Categories array with all infos: niceName, excluded, RSS, requestName
+	   $categoriesInfosFromOption = get_option('my_own_little_ebay_shop_categories');
+	    		
 	    //Show Welcome Messsage
 	    if($showWelcomeMessage){
 		    $results = '<p>';
@@ -250,13 +270,20 @@ function theLittleShop($theShop){
 	    //If there is a Temp File
 			$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().$requestedCat.".txt";
 			if(!tempFileValid($tempCatItemsPath, $maxDiffTime)){
+				//Find the rss for the category requested
+	    		foreach($categoriesInfosFromOption as $cat){
+	    			if($cat['requestName'] === $requestedCat) {
+	    			$requestedCatRss = $cat['rss'];
+	    			checkRSSUpdate($requestedCatRss);
+	    			break;
+	    			}
+	    		}
 				//Create a temp file and return array of items
 			    $items =  createCatItemsTempFile($sellerID, $query, $tempCatItemsPath, $requestedCatRss);
 			}else{
 				//Recent: get the Temp file and return a array of items
 				$items = getTempFileContent($tempCatItemsPath);
 			}
-			
 			//ebayShopDebug($items);
 			
 			//Show Category Items as Thumbs

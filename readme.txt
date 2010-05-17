@@ -4,7 +4,7 @@ Donate link: http://fuck-dance-lets-art.com
 Tags: ebay, easy, simple, fast, quick
 Requires at least: 2.6
 Tested up to: 2.9.1
-Stable tag: 0.2
+Stable tag: 0.3
 
 Very fast plugin that cache shop's content for a quicker user experience. Easy and clever. Displays your eBay shop listings with all infos.
 
@@ -43,14 +43,19 @@ none
 == To Do ==
 
 * work on the css (options, items, listings).
+* shop search.
+* use shop description for welcome message 
 * When retrieving, ask if you want to: replace all categories, add/remove new/deleted categories. Keep user's nice names.
-* Cooler loading for retrieving.
 * Pagination for shop.
-* Option to set shop name nice name, Thumbs size(3232, 6464, 9696), "Temp files" life length.
 * Item ending time/date: Need Time Spamp from wordpress.
+* check if new changes have been made to the shop before recreating the temp file.
  
 
 == Change log ==
+v0.3:
+* Cooler loading for retrieving.
+* Temp files life length option.
+
 v0.2:
 
 * alpha version
@@ -65,5 +70,5 @@ v0.1:
 
 == View online examples ==
 
-Check out Anna Chocola cool and trendy Shop at [annachocola.com]
-[annachocola.com] : http://annachocola.com/ebay-shop/
+soon at [Anna Chocola syntax][annachocola.com]
+[Anna Chocola syntax] : http://annachocola.com

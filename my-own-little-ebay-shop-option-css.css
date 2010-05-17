@@ -93,3 +93,17 @@ table.my_own_little_ebay_shop_table th{
 	background:#EFEFEF;
 	border-bottom:solid 1px #CCC;
 }
+
+/****Loading*****/
+#loading{
+	position:absolute;
+	padding:0 !important;
+	margin:0 !important;
+	left:-10000000px;
+	font-size:150%;
+	opacity:0;
+	text-align:center;
+}
+#loading img{
+	vertical-align:bottom;
+}

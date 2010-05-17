@@ -23,21 +23,20 @@ j$(document).ready(function(){
    					j$("#loading").fadeTo(500, 0, function(){
    						j$("#loading").css({'left':'-1000000px'});
    					});
-   					j$("#retreiveCategories").fadeTo(1000, 1);
- 					j$("#my_own_little_ebay_shop_cats small").fadeTo(1000, 1);
- 					j$("#my_own_little_ebay_shop_cats").fadeTo(1000, 1);
+   					j$("#manageCategories").fadeTo(1000, 1);
    					//Append the list of Categories
    					j$("#my_own_little_ebay_shop_cats").empty();
      				j$("#my_own_little_ebay_shop_cats").append(returnedData);
+     				//TODO: Refresh DropDown Menu for welcome message
+     				
      				requestOnce = false;
    				}
  			});
  			//Loading
  			var loadingPos = j$("#manageCategories").position();
- 			j$("#loading").css({'top':loadingPos.top+(j$("#manageCategories").outerHeight()-j$(this).outerHeight())*0.5, 'left':loadingPos.left+(j$("#manageCategories").outerWidth()-j$(this).outerWidth())*0.5});
- 			j$("#retreiveCategories").fadeTo(1000, 0.2);
- 			j$("#my_own_little_ebay_shop_cats small").fadeTo(1000, 0.2);
- 			j$("#my_own_little_ebay_shop_cats").fadeTo(1000, 0.2, function(){
+ 			//j$("#loading").css({'top':loadingPos.top+(j$("#manageCategories").outerHeight()-j$(this).outerHeight())*0.5, 'left':loadingPos.left+(j$("#manageCategories").outerWidth()-j$(this).outerWidth())*0.5});
+ 			j$("#loading").css({'top':loadingPos.top+(j$("#manageCategories").outerHeight()*0.5)-j$(this).outerHeight(), 'left':loadingPos.left+(j$("#manageCategories").outerWidth()*0.5)-(j$(this).outerWidth())});
+ 			j$("#manageCategories").fadeTo(1000, 0.2, function(){
  				j$("#loading").fadeTo(500, 1);
  			});
  			requestOnce = true;

@@ -7,18 +7,6 @@
 
 //error_reporting(E_ALL);  // turn on all errors, warnings and notices for easier debugging
 
-/*  TO DO   */   
-/*
-
-1/ Item ending time/date: Need Time Spamp from wordpress
-2/ Options:  - Thumbs size(3232, 6464, 9696)
-             - Shop Name
-3/ Make php create the Temp folder ( for permissions )
-4/ don't erase nicename of categories that allready exist
-5/ paginations
-6/ generate text files when retreiving categories
-*/
-
 /* my base path to the files */
 define('MY_OWN_LITTLE_EBAY_SHOP_BASE', dirname(__FILE__));
 
@@ -50,8 +38,8 @@ if(!empty($_POST)){
 			//Category Name and Nicename
 			$returnCatsRSSList.='<li><input type="checkbox" name="my_own_little_ebay_shop_categories['.$cat.'][excluded]"><input value="'.$cat.'" name="my_own_little_ebay_shop_categories['.$cat.'][niceName]"/></li>';
 			//Create Categories Temp Files
-			//$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().nicePath($cat).'.txt';
-			//createCatItemsTempFile($_POST["getCatsRSS"], $query, $tempCatItemsPath, $val);
+			$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().nicePath($cat).'.txt';
+			createCatItemsTempFile($_POST["getCatsRSS"], $query, $tempCatItemsPath, $val);
 		}
 		//Return Category list
 		echo $returnCatsRSSList;
@@ -116,7 +104,7 @@ function collectItems($seller, $myQuery, $itemsIDArray){
 	
 	// Load the call and capture the document returned by the API
 	$resp = simplexml_load_file($apicall);
-	
+	//ebayShopDebug($resp);
 	// Check to see if the response was loaded, else print an error
 	if ($resp) {
 		//Recursively transform object into array.
@@ -180,6 +168,16 @@ function tempFileValid($path, $maxDiffTime){
 	else $tempValid = false;
 	return $tempValid;
 }
+
+/********************************************************************************/
+//Check Any Changes in the eBay Shop
+function checkRSSUpdate($catRSS){
+	// Load the call and capture the document returned by the rss
+    $resp = simplexml_load_file($catRSS);
+    //ebayShopDebug((string)$resp->comment);
+    ebayShopDebug($resp);
+}
+
 
 
 /********************************************************************************/
