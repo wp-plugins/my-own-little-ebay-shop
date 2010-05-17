@@ -1,3 +1,9 @@
+/*Plugin: my-own-little-ebay-shop*/
+/*Content: Javascript for the plugin */
+/*Author: Thomas Michalak aka TM*/
+/*Author URI: http://www.fuck-dance-lets-art.com*/
+
+
 var j$ = jQuery.noConflict();
 
 

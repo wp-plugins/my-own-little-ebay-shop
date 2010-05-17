@@ -1,27 +1,47 @@
-var j$ = jQuery.noConflict();
+/*Plugin: my-own-little-ebay-shop*/
+/*Content: Javascript for the Admin Options */
+/*Author: Thomas Michalak aka TM*/
+/*Author URI: http://www.fuck-dance-lets-art.com*/
 
+var j$ = jQuery.noConflict();
+var requestOnce = false;
 
 j$(document).ready(function(){
     
     j$("#retreiveCategories").click(function(e){
         e.preventDefault();
-        //Get SellerID
-        var mySellerID = j$("#my_own_little_ebay_shop_username").val();
-        //Send Ajax request
-        j$.ajax({
-   			type: "POST",
-   			url: "../wp-content/plugins/my-own-little-ebay-shop/my-own-little-ebay-shop-functions.php",
-   			data: "getCatsRSS="+mySellerID,
-   			success: function(returnedData){
-   				//Clear loading
-   				j$("#my_own_little_ebay_shop_cats").empty();
-   				//Append the list of Categories
-     			j$("#my_own_little_ebay_shop_cats").append(returnedData);
-   			}
- 		});
- 		//Loading
-		j$("#my_own_little_ebay_shop_cats").append("<li>Retreiving Categories, please wait…</li>");
-		
+        if(!requestOnce){
+        	//Get SellerID
+        	var mySellerID = j$("#my_own_little_ebay_shop_username").val();
+        	//Send Ajax request
+        	j$.ajax({
+   				type: "POST",
+   				url: "../wp-content/plugins/my-own-little-ebay-shop/my-own-little-ebay-shop-functions.php",
+   				data: "getCatsRSS="+mySellerID,
+   				success: function(returnedData){
+   					//Clear loading
+   					j$("#loading").fadeTo(500, 0, function(){
+   						j$("#loading").css({'left':'-1000000px'});
+   					});
+   					j$("#retreiveCategories").fadeTo(1000, 1);
+ 					j$("#my_own_little_ebay_shop_cats small").fadeTo(1000, 1);
+ 					j$("#my_own_little_ebay_shop_cats").fadeTo(1000, 1);
+   					//Append the list of Categories
+   					j$("#my_own_little_ebay_shop_cats").empty();
+     				j$("#my_own_little_ebay_shop_cats").append(returnedData);
+     				requestOnce = false;
+   				}
+ 			});
+ 			//Loading
+ 			var loadingPos = j$("#manageCategories").position();
+ 			j$("#loading").css({'top':loadingPos.top+(j$("#manageCategories").outerHeight()-j$(this).outerHeight())*0.5, 'left':loadingPos.left+(j$("#manageCategories").outerWidth()-j$(this).outerWidth())*0.5});
+ 			j$("#retreiveCategories").fadeTo(1000, 0.2);
+ 			j$("#my_own_little_ebay_shop_cats small").fadeTo(1000, 0.2);
+ 			j$("#my_own_little_ebay_shop_cats").fadeTo(1000, 0.2, function(){
+ 				j$("#loading").fadeTo(500, 1);
+ 			});
+ 			requestOnce = true;
+        }
     });
     
     

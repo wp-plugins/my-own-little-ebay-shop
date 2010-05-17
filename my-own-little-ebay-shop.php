@@ -3,7 +3,7 @@
 Plugin Name: My own little eBay Shop
 Plugin URI: http://fuck-dance-lets-art.com/my-own-little-ebay-shop-wordpress-plugin
 Description: **THIS IS A ALPHA VERSION, PLEASE DO NOT INSTALL, THE FIRST RELEASE WILL COME VERY SOON**. Very fast plugin that cache your shop's content for a quicker and smoother user experience. Easy to set up, with some clever functionalities,  including retrieving your shop categories, excluding categories, renaming categories (only in wordpress), set a "refresh temp file" time. Displays your ebay shop listing, items infos (pictures, bids, price, etc‚ ...) with links to your listing and shop.
-Version: 0.1
+Version: 0.2
 Author: Thomas Michalak aka TM
 Author URI: http://fuck-dance-lets-art.com/
 */
@@ -38,6 +38,9 @@ add_option(select_my_own_little_ebay_shop_page, '');
 add_option(my_own_little_ebay_shop_username, 'annachocola');
 add_option(my_own_little_ebay_shop_cats_excluded, '');
 add_option(my_own_little_ebay_shop_categories, '');
+add_option(my_own_little_ebay_shop_message_switch, 'on');
+add_option(my_own_little_ebay_shop_welcome_message, 'Welcome to '.get_bloginfo('name').' ebay shop, browse my lovely items and buy!'); 
+add_option(my_own_little_ebay_shop_welcome_category, '');
 
 function my_own_little_ebay_shop_options() {
         	
@@ -82,10 +85,11 @@ function my_own_little_ebay_shop_options() {
 	//Shop Categories
 	$my_own_little_ebay_shop_cats_excluded = get_option('my_own_little_ebay_shop_cats_excluded');
 	$my_own_little_ebay_shop_categories = get_option('my_own_little_ebay_shop_categories');
-	ebayShopDebug($my_own_little_ebay_shop_categories);
+	//ebayShopDebug($my_own_little_ebay_shop_categories);
 	echo '<tr valign="top">';
     echo '<th scope="row">Manage the ebay shop categories</th>';
-	echo '<td>';
+	echo '<td id="manageCategories">';
+	echo '<p id="loading" style="position:absolute;padding:0;left:-10000000px;font-size:150%;opacity:0">Retreiving Categories, please wait…</p>';
 	echo '<a href="" id="retreiveCategories">Retreive my shop categories</a> <small>(this will delete your current categories\' list below)</small>';
 	echo '<ul id="my_own_little_ebay_shop_cats" class="my_own_little_ebay_shop_list">';
 	/*No Categories saved in the options*/
@@ -107,12 +111,55 @@ function my_own_little_ebay_shop_options() {
 	echo '</td></tr>';
 		
 	
-	//End of Options
+	// Welcome Message Options
+	echo '<tr valign="top">';
+	echo '<th scope="row">Welcome Message</th>';
+	//Message On/Off
+	echo '<td><ul class="switch_OnOff">';
+	$message_status = get_option('my_own_little_ebay_shop_message_switch');
+	$switch_name = array('On', 'Off');
+	foreach($switch_name as $value){
+		if($value == $message_status){
+		        $sel = ' checked = true';
+		        $sel_style = ' class = selected';
+	        }else{
+		        $sel = '';
+		        $sel_style = '';
+	        }
+		//update_option(allInOneGallery_message_switch, false);
+	        echo '<li><input type="radio"'.$sel.$sel_style.' value="'.$value.'" name="my_own_little_ebay_shop_message_switch"><label>'.$value.'</label></li>';
+	}
+	echo '</ul>';
+	//Message content ( if switch is On )
+	$textarea_content = get_option('my_own_little_ebay_shop_welcome_message');
+	echo '<p> If the Welcome message is ON, display the message below</p>';
+	echo '<textarea class="textarea_style" name="my_own_little_ebay_shop_welcome_message">';
+	echo $textarea_content;
+	echo '</textarea>';
+	//Category to show First ( if switch if Off )
+	echo '<p style="width:100%"> If the Welcome message is Off, Select a category to be displayed as default <small>(exluded categories won\'t appear in this option)</small></p>';
+	echo '<select name="my_own_little_ebay_shop_welcome_category"';
+	$welcome_cat = get_option('my_own_little_ebay_shop_welcome_category');
+	
+	foreach($my_own_little_ebay_shop_categories as $cat){
+		if($cat['excluded'] === 'off'){
+			if($welcome_cat === $cat['requestName']){
+				$sel = 'selected = "selected"';
+			}else{
+				$sel = '';
+			}
+			echo '<option value="'.$cat['requestName'].'"'.$sel.'>'.$cat['niceName'].'</option>';
+		}
+	}
+	echo '</select>';
+	
+	echo '</td></tr>';
 	    
+	//End of Options 
         echo '</table>';
 
         echo '<input type="hidden" name="action" value="update" />';
-        echo '<input type="hidden" name="page_options" value="select_my_own_little_ebay_shop_page, my_own_little_ebay_shop_username, my_own_little_ebay_shop_categories, my_own_little_ebay_shop_cats_excluded" />';
+        echo '<input type="hidden" name="page_options" value="select_my_own_little_ebay_shop_page, my_own_little_ebay_shop_username, my_own_little_ebay_shop_categories, my_own_little_ebay_shop_cats_excluded, my_own_little_ebay_shop_message_switch, my_own_little_ebay_shop_welcome_message, my_own_little_ebay_shop_welcome_category" />';
 
         echo '<p class="submit">';
         echo '<input type="submit" name="Submit" value="Save Changes" />';
@@ -167,6 +214,7 @@ function theLittleShop($theShop){
 		
 		//Settings
 		$sellerID = get_option('my_own_little_ebay_shop_username');
+		$welcomeMessage = get_option('my_own_little_ebay_shop_message_switch');
 		$query = '';
 		$nbrItemsPerPage = '9';
 		$items = array();
@@ -174,51 +222,67 @@ function theLittleShop($theShop){
 		$maxDiffTime = 60*24;
 	
 		if(empty($_GET)){
-			$requestedCat = 'All';
+			if( $welcomeMessage === 'On') $showWelcomeMessage = true;
+			else {
+				$showWelcomeMessage = false;
+				$requestedCat = get_option('my_own_little_ebay_shop_welcome_category');
+			}
 		}else{
 			if(isset($_GET["shopFor"]) || ctype_print($_GET["shopFor"])) $requestedCat = $_GET["shopFor"];
 		}
 	    //Get Categories array with all infos: niceName, excluded, RSS, requestName
 	    $categoriesInfosFromOption = get_option('my_own_little_ebay_shop_categories');
 	    //Find the rss for the category requested
-	    foreach($categoriesInfosFromOption as $key){
-	    	if($key['requestName'] === $requestedCat) {
-	    		$requestedCatRss = $key['rss'];
+	    foreach($categoriesInfosFromOption as $cat){
+	    	if($cat['requestName'] === $requestedCat) {
+	    		$requestedCatRss = $cat['rss'];
 	    		break;
 	    	}
 	    }
+	    //Show Welcome Messsage
+	    if($showWelcomeMessage){
+		    $results = '<p>';
+	    	$results.= get_option('my_own_little_ebay_shop_welcome_message');
+	    	$results.= '<p>';
+	    }
+	    //Show Category content
+	    else{
 	    //If there is a Temp File
-		$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().$requestedCat.".txt";
-		if(!tempFileValid($tempCatItemsPath, $maxDiffTime)){
-			//Create a temp file and return array of items
-		    $items =  createCatItemsTempFile($sellerID, $query, $tempCatItemsPath, $requestedCatRss);
-		}else{
-			//Recent: get the Temp file and return a array of items
-			$items = getTempFileContent($tempCatItemsPath);
-		}
-		
-		//ebayShopDebug($items);
-		
-		//Show Category Items as Thumbs
-		$results = '<ul id="thumbs">';
-		foreach($items as $item) {
-			$myID = $item['ItemID'];
-		    $galleryURL = $item['GalleryURL'];
-		    $price = $item['ConvertedCurrentPrice'];
-			// For each result node, build a link and append it to $results
-			$results .= "<li><a href=\"".myOwnLittleEbayShopPluginURL()."/my-own-little-ebay-shop-item.php?cat=$requestedCat&itemID=$myID\"><div class=\"thumb\"><img src=\"$galleryURL\"></div><p>£$price</p></a></li>";
-		}	
-		$results .= '</ul>';
+			$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().$requestedCat.".txt";
+			if(!tempFileValid($tempCatItemsPath, $maxDiffTime)){
+				//Create a temp file and return array of items
+			    $items =  createCatItemsTempFile($sellerID, $query, $tempCatItemsPath, $requestedCatRss);
+			}else{
+				//Recent: get the Temp file and return a array of items
+				$items = getTempFileContent($tempCatItemsPath);
+			}
+			
+			//ebayShopDebug($items);
+			
+			//Show Category Items as Thumbs
+			$results = '<ul id="thumbs">';
+			foreach($items as $item) {
+				$myID = $item['ItemID'];
+			    $galleryURL = $item['GalleryURL'];
+			    $price = $item['ConvertedCurrentPrice'];
+				// For each result node, build a link and append it to $results
+				$results .= "<li><a href=\"".myOwnLittleEbayShopPluginURL()."/my-own-little-ebay-shop-item.php?cat=$requestedCat&itemID=$myID\"><div class=\"thumb\"><img src=\"$galleryURL\"></div><p>£$price</p></a></li>";
+			}	
+			$results .= '</ul>';
+	    }
+	   
 		
 		
 		//Show Menu
 		$menu = '';
-		 $menu .= '<ul id="menu">';
-		 foreach($categoriesInfosFromOption as $cat){
-		 	if($cat['requestName'] == $requestedCat) $class= "selected";
-		 	else $class = "";
-		  $menu .= "<li class=\"$class\"><a href=\"?shopFor=".$cat['requestName']."\">".$cat['niceName']."</a></li>";
-		  }
+		$menu .= '<ul id="menu">';
+		foreach($categoriesInfosFromOption as $cat){
+		 	if($cat['excluded'] === 'off'){
+		 		if($cat['requestName'] === $requestedCat) $class= "selected";
+		 		else $class = "";
+		  		$menu .= "<li class=\"$class\"><a href=\"?shopFor=".$cat['requestName']."\">".$cat['niceName']."</a></li>";
+		 	}
+		}
 		$menu .= '</ul>';
 		
 		$theShop = '<div id="myLittleShop">'.$menu.$results.'</div>';

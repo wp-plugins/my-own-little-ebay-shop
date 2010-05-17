@@ -1,5 +1,11 @@
 <?php
 
+/*Plugin: my-own-little-ebay-shop*/
+/*Content: Items functions*/
+/*Author: Thomas Michalak aka TM*/
+/*Author URI: http://www.fuck-dance-lets-art.com*/
+
+
 require_once('my-own-little-ebay-shop-functions.php');
 
 if(empty($_GET)){
@@ -10,7 +16,7 @@ if(empty($_GET)){
 	if(isset($_GET["itemID"]) || ctype_digit($_GET["itemID"])) $itemID = $_GET["itemID"];
 }
 
-$myItem = getItem($itemID, tempFolderPATH().$cat.'.txt'); //Recent: get the Temp file and return a array of items
+$myItem = getItem($itemID, myOwnLittleEbayShopTempFolderPATH().$cat.'.txt'); //Recent: get the Temp file and return a array of items
 
 //ebayShopDebug($myItem);
 
@@ -66,7 +72,7 @@ echo '</div>';
 echo '<p>'.$descript.'</p>';
 echo '</div>';
 echo '<div id="bottomEnlarged">';
-echo '<p id="ebayLogo" style="width:89px"><a href="'.$itemOnEbay.'" target="_blank">Powered by<img src="'.pluginURLDirect().'/imgs/logo-ebay.gif" width=89 height=37></a></p><p id="feedback"><a href="'.$storeURL.'" target="_blank">'.$storeName.'</a> has a positive feedback of '.$positiveFeedbackPercent .'%</p>';
+echo '<p id="ebayLogo" style="width:89px"><a href="'.$itemOnEbay.'" target="_blank">Powered by<img src="'.myOwnLittleEbayShopPluginURLDirect().'/imgs/logo-ebay.gif" width=89 height=37></a></p><p id="feedback"><a href="'.$storeURL.'" target="_blank">'.$storeName.'</a> has a positive feedback of '.$positiveFeedbackPercent .'%</p>';
 echo '</div>';
 
 ?>

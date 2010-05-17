@@ -1,5 +1,10 @@
 <?php
 
+/*Plugin: my-own-little-ebay-shop*/
+/*Content: Plugin main functions */
+/*Author: Thomas Michalak aka TM*/
+/*Author URI: http://www.fuck-dance-lets-art.com*/
+
 //error_reporting(E_ALL);  // turn on all errors, warnings and notices for easier debugging
 
 /*  TO DO   */   
@@ -9,8 +14,9 @@
 2/ Options:  - Thumbs size(3232, 6464, 9696)
              - Shop Name
 3/ Make php create the Temp folder ( for permissions )
-4/ don't erase nicename of categories that all ready exist
-
+4/ don't erase nicename of categories that allready exist
+5/ paginations
+6/ generate text files when retreiving categories
 */
 
 /* my base path to the files */
@@ -34,16 +40,20 @@ if(!empty($_POST)){
     	//file_put_contents($tempShopCatsPath, $serializedCatsList, LOCK_EX);
         //Return the list of Categories
 		$returnCatsRSSList='';
-		foreach($catRSS as $key => $val){
+		foreach($catRSS as $cat => $val){
 			//Excluded default
-			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$key.'][excluded]" value="off" class="hidden"/>';
+			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$cat.'][excluded]" value="off" class="hidden"/>';
 			//Rss
-			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$key.'][rss]" value="'.$val.'" class="hidden"/>';
+			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$cat.'][rss]" value="'.$val.'" class="hidden"/>';
 			//Name for request and text file
-			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$key.'][requestName]" value="'.nicePath($key).'" class="hidden"/>';
+			$returnCatsRSSList.= '<input name="my_own_little_ebay_shop_categories['.$cat.'][requestName]" value="'.nicePath($cat).'" class="hidden"/>';
 			//Category Name and Nicename
-			$returnCatsRSSList.='<li><input type="checkbox" name="my_own_little_ebay_shop_categories['.$key.'][excluded]"><input value="'.$key.'" name="my_own_little_ebay_shop_categories['.$key.'][niceName]"/></li>';
+			$returnCatsRSSList.='<li><input type="checkbox" name="my_own_little_ebay_shop_categories['.$cat.'][excluded]"><input value="'.$cat.'" name="my_own_little_ebay_shop_categories['.$cat.'][niceName]"/></li>';
+			//Create Categories Temp Files
+			//$tempCatItemsPath = myOwnLittleEbayShopTempFolderPATH().nicePath($cat).'.txt';
+			//createCatItemsTempFile($_POST["getCatsRSS"], $query, $tempCatItemsPath, $val);
 		}
+		//Return Category list
 		echo $returnCatsRSSList;
 	}
 }

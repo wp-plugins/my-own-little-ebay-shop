@@ -1,4 +1,4 @@
-/*Plugin: My Own Little eBay Shop*/
+/*Plugin: my-own-little-ebay-shop*/
 /*Content: CSS for the Admin Options */
 /*Author: Thomas Michalak aka TM*/
 /*Author URI: http://www.fuck-dance-lets-art.com*/
@@ -23,6 +23,9 @@ ul.my_own_little_ebay_shop_list li, #exlu_cat_style li, #exlu_cat_style li.selec
 }
 ul.my_own_little_ebay_shop_list li{
                 width:90%;
+}
+#my_own_little_ebay_shop_cats li{
+	width:auto;
 }
 #my_own_little_ebay_shop_aspect_style li span, ul.my_own_little_ebay_shop_list li select{
                 width:100%;
