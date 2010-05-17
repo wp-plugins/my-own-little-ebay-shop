@@ -65,5 +65,5 @@ v0.1:
 
 == View online examples ==
 
-soon at [annachocola.com]
+Check out Anna Chocola cool and trendy Shop at [annachocola.com]
 [annachocola.com] : http://annachocola.com/ebay-shop/
