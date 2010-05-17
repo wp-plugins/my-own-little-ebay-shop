@@ -1,0 +1,267 @@
+/*Plugin: my-own-little-ebay-shop*/
+/*Content: CSS for plugin*/
+/*Author: Thomas Michalak aka TM*/
+/*Author URI: http://www.fuck-dance-lets-art.com*/
+body{
+position:relative;
+}
+.round10{
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+}
+.round5{
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+}
+.round3{
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+}
+.shadowL{
+	-moz-box-shadow:0 0 40px #999;
+	-webkit-box-shadow:0 0 40px #999;
+}
+
+.shadowSL{
+	-moz-box-shadow:0 0 10px #CCC;
+	-webkit-box-shadow:0 0 10px #CCC;
+}
+.bt{
+	border:solid 1px #333;
+	background: #333;
+	color:#FFF;
+	padding:4px 10px 5px;	
+}
+.bt:hover{
+	border:solid 1px #333;
+	background: #EFEFEF;
+	color:#333;
+}
+
+#myLittleShop{
+ width:100%;
+ margin:0 auto;
+ text-align:left;
+ float: left;	
+}
+#menu, #thumbs{
+	list-style:none !important;
+	float:left !important;
+	margin:2px !important;
+	padding:0 !important;
+}
+#menu li, #thumbs li{
+	float:left;	
+	text-align:center;
+}
+#menu li a{
+	float:left;
+	border:solid 1px #333;
+	text-align:center;
+	color:#EFEFEF;
+	background:#333;
+}
+#menu li a:hover{
+	border:solid 1px #CCC;
+	background:#CCC;
+	color:#333;
+}
+#menu li.selected a, #menu li.selected a:hover{
+	border-color:#CCC;
+	color:#333;
+	background:#CCC;
+}
+
+#thumbs li a{
+	float:left;
+	border:solid 1px #ccc;
+	text-align:center;
+	background:#fff;
+}
+#thumbs li a:hover{
+	border:solid 1px #DF53A7;
+	background:#fff;
+}
+
+#thumbs li a p{
+	margin:2px 0 0;
+	padding:2px 2px 3px 3px;
+	font-size:80%;
+	color: #666;
+	background:#EFEFEF;
+}
+#thumbs li a:hover p{
+	color: #FFF;
+	background:#DF53A7;
+}
+#thumbs li a .thumb img{
+	background:#EFEFEF;
+	border:none;
+	margin:0 !important;
+	padding:0 !important;
+}
+#thumbs li a .thumb, #menu li a{
+    width:96px;
+	height:96px;
+	padding:5px;
+}
+#behind{
+	display:none;
+	background:#FFF;
+	width:100%;
+	height:100%;
+	position:absolute;
+	left:0;
+	top:0;
+}
+#enlarged{
+	left:-10000000px;
+	top:50px;
+	background:#FFF;
+	position:absolute;
+	border:solid 1px #333;
+	padding:20px;
+	-moz-border-radius:10px;
+	-moz-box-shadow:0 0 40px #999;
+	-webkit-border-radius:10px;
+	-webkit-box-shadow:0 0 40px #999;
+	text-align:left;
+	min-height:490px;
+	display:none;
+}
+#close{
+	position:absolute;
+	right:-15px;
+	top:-15px;
+	width:30px;
+	height:30px;
+	background:#FFF;
+	border:solid 1px #333;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
+	-moz-box-shadow:0 0 10px #999;
+	-webkit-box-shadow:0 0 10px #999;
+	background-repeat:none;
+	background-image:URL("imgs/close.jpg");
+	background-position:bottom center;
+}
+#close:hover{
+	background-position:top center;
+}
+#topEnlarged{
+	padding:0 0 5px 0;
+	margin:0 0 0 0;
+	border-bottom:solid 1px #666;
+	width:490px;
+}
+#topEnlarged h3{
+	font-size:100%;
+	margin:0 0 10px 0;
+	padding:0 0;
+}
+#topEnlarged p{
+	padding:0;
+	margin:5px 0;
+	font-size:90%;
+}
+#enlargedContent{
+	background:#FFF;
+    /*overflow:auto;*/
+    width:490px;
+	/*height: 490px;*/
+}
+
+#enlargedContent p{
+	text-align:justify;
+	padding:0 5px;
+	margin:10px 0;
+	width:480px;
+	font-size:80%;
+}
+#enlargedContent p#imgsCount{
+	margin:2px 0;
+	padding:0 5px;
+	text-align:center;
+	font-size:70%;
+}
+#slideImgs{
+	float:left;
+	width:492px;
+	height:412px;
+	margin-bottom:10px;
+}
+a.nav{
+    padding:0;
+    margin:	0;
+    float:left;
+    width:15px;
+    height:412px;
+    background-repeat:no-repeat;
+    background-color:#062f32;
+    background-position:top left;
+}
+a.nav:hover{
+	background-color:#11848e;
+	background-position:bottom left;
+}
+a.next, a.next:hover{
+    background-image:URL("imgs/next.gif");	
+}
+a.previous, a.previous:hover{
+    background-image:URL("imgs/previous.gif");	
+}
+#imgs{
+	width:460px;
+	height:410px;
+	overflow:hidden;
+	float:left;
+	border:solid 1px #666;
+	text-align:center;
+	position:relative;
+}
+#imgs ul{
+    list-style:none;	
+    white-space:nowrap;
+    margin:0;
+    padding:0;
+    position:absolute;
+    top:0;
+    left:0;
+}
+#imgs ul li{
+	display:block;
+	float:left;
+	zoom: 1;
+	# display:inline;
+	width:460px;
+	height:410px;
+	top:0;
+	left:0;
+	margin:0;
+	padding:0;
+    position:relative;
+	background-position:center center;
+	background-repeat:no-repeat;
+}
+#bottomEnlarged{
+	padding:5px 0 0 0;
+	margin:20px 0 0 0;
+	border-top:solid 1px #666;
+	width:490px;
+}
+#bottomEnlarged #ebayLogo{
+	float:left;
+	text-align:center !important;
+	color: #666 !important;
+	font-size: 80% !important;
+	padding-right:10px;
+	margin-right:10px;
+	border-right:solid 1px #666;
+}
+#bottomEnlarged #ebayLogo img{
+
+}
+#bottomEnlarged #feedback{
+   margin-top:25px;	
+   text-align:left !important;
+}
