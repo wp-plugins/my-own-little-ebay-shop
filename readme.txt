@@ -4,7 +4,7 @@ Donate link: http://fuck-dance-lets-art.com
 Tags: ebay, easy, simple, fast, quick
 Requires at least: 2.6
 Tested up to: 2.9.1
-Stable tag: 0.1
+Stable tag: 0.2
 
 Very fast plugin that cache shop's content for a quicker user experience. Easy and clever. Displays your eBay shop listings with all infos.
 
